@@ -15,10 +15,10 @@ include_once 'taxonomies.php';
 /**
  * Check the Attachments plugin is enabled before enabling the current plugin
  */
-add_action( 'admin_init', 'otm_document_check_dependencies' );
-function otm_document_check_dependencies() {
+add_action( 'admin_init', 'otm_documents_check_dependencies' );
+function otm_documents_check_dependencies() {
 	if ( is_admin() && current_user_can( 'activate_plugins' ) &&  ! is_plugin_active( 'attachments/index.php' ) ) {
-		add_action( 'admin_notices', 'otm_document_dependency_missing_notice' );
+		add_action( 'admin_notices', 'otm_documents_dependency_missing_notice' );
 
 		deactivate_plugins( plugin_basename( __FILE__ ) );
 
@@ -28,7 +28,7 @@ function otm_document_check_dependencies() {
 	}
 }
 
-function otm_document_dependency_missing_notice(){
+function otm_documents_dependency_missing_notice(){
 	?>
 	<div class="error">
 		<p><?php _e( 'Sorry, but OTM Documents requires the Attachments plugin to be installed and active.', 'otm-documents' ); ?></p>
