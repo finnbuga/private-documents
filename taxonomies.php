@@ -115,7 +115,7 @@ function otm_documents_change_event_meta_box_position( $post_type ) {
  * Order Events by term_id
  */
 add_filter( 'get_terms_args', 'otm_documents_reorder_events_by_term_id', 10, 2 );
-function otm_documents_reorder_events_by_term_id ( $args, $taxonomies ) {
+function otm_documents_reorder_events_by_term_id( $args, $taxonomies ) {
 	if ( 'event' == $taxonomies[0] ) {
 		$args['orderby'] = 'term_id';
 		$args['order']   = 'DESC';
@@ -149,7 +149,7 @@ function otm_documents_add_event_filter( $post_type ) {
 }
 
 add_filter( 'parse_query','otm_documents_query_by_event' );
-function otm_documents_query_by_event($wp_query) {
+function otm_documents_query_by_event( $wp_query ) {
 	$taxonomy = 'event';
 	global $pagenow;
 
