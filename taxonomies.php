@@ -149,11 +149,11 @@ function otm_documents_add_event_filter( $post_type ) {
 }
 
 add_filter( 'parse_query','otm_documents_query_by_event' );
-function otm_documents_query_by_event($query) {
+function otm_documents_query_by_event($wp_query) {
 	$taxonomy = 'event';
 	global $pagenow;
 
-	$query_vars = &$query->query_vars;
+	$query_vars = &$wp_query->query_vars;
 	if ( $pagenow == 'edit.php' && isset( $query_vars[$taxonomy] ) && is_numeric( $query_vars[$taxonomy]) ) {
 		$term = get_term_by('id', $query_vars[$taxonomy], $taxonomy);
 		$query_vars[$taxonomy] = $term ? $term->slug : '';
