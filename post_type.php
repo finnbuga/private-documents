@@ -49,3 +49,67 @@ function otm_document_register_post_type() {
 
 	register_post_type( 'document', $args );
 }
+
+/**
+ * Set bulk document updated messages
+ */
+add_filter( 'bulk_post_updated_messages', 'otm_documents_set_bulk_document_updated_messages', 10, 2 );
+function otm_documents_set_bulk_document_updated_messages ( $bulk_messages, $bulk_counts) {
+	$bulk_messages['document'] = array(
+		'updated'   => _n( '%s document updated.', '%s documents updated.', $bulk_counts['updated'] ),
+		'locked'    => ( 1 == $bulk_counts['locked'] ) ? __( '1 document not updated, somebody is editing it.' ) :
+			_n( '%s document not updated, somebody is editing it.', '%s documents not updated, somebody is editing them.', $bulk_counts['locked'] ),
+		'deleted'   => _n( '%s document permanently deleted.', '%s documents permanently deleted.', $bulk_counts['deleted'] ),
+		'trashed'   => _n( '%s document moved to the Trash.', '%s documents moved to the Trash.', $bulk_counts['trashed'] ),
+		'untrashed' => _n( '%s document restored from the Trash.', '%s documents restored from the Trash.', $bulk_counts['untrashed'] ),
+	);
+	
+	return $bulk_messages;
+}
+
+/**
+ * Set document updated messages
+ */
+add_filter( 'post_updated_messages', 'otm_documents_set_document_updated_messages' );
+function otm_documents_set_document_updated_messages( $messages ) {
+	global $post;
+
+	$permalink = get_permalink( $post->ID );
+	if ( ! $permalink ) {
+		$permalink = '';
+	}
+
+	$view_document_link_html = sprintf( ' <a href="%1$s">%2$s</a>',
+		esc_url( $permalink ),
+		__( 'View document' )
+	);
+
+	$preview_document_link_html = sprintf( ' <a target="_blank" href="%1$s">%2$s</a>',
+		esc_url( $preview_url ),
+		__( 'Preview document' )
+	);
+
+	$scheduled_document_link_html = sprintf( ' <a target="_blank" href="%1$s">%2$s</a>',
+		esc_url( $permalink ),
+		__( 'Preview document' )
+	);
+
+	$scheduled_date = date_i18n( __( 'M j, Y @ H:i' ), strtotime( $post->post_date ) );
+
+	$messages['document'] = array(
+		0 => '', // Unused. Messages start at index 1.
+		1 => __( 'Document updated.' ),
+		2 => __( 'Custom field updated.' ),
+		3 => __( 'Custom field deleted.' ),
+		4 => __( 'Document updated.' ),
+		/* translators: %s: date and time of the revision */
+		5 => isset($_GET['revision']) ? sprintf( __( 'Document restored to revision from %s.' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+		6 => __( 'Document published.' ) . $view_document_link_html,
+		7 => __( 'Document saved.' ),
+		8 => __( 'Document submitted.' ) . $preview_document_link_html,
+		9 => sprintf( __( 'Document scheduled for: %s.' ), '<strong>' . $scheduled_date . '</strong>' ) . $scheduled_document_link_html,
+		10 => __( 'Document draft updated.' ) . $preview_document_link_html,
+	);
+	
+	return $messages;
+}
