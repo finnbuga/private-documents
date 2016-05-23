@@ -8,7 +8,8 @@ register_activation_hook( __FILE__, 'otm_documents_add_roles' );
 function otm_documents_add_roles() {
 	//remove_role( 'member' );
 	$member_capabilities = array(
-		'read_private_posts' => true
+		'read_private_posts' => true,
+		'read_private_pages' => true
 	);
 	add_role( 'member', __( 'Member' ), $member_capabilities);
 
