@@ -84,11 +84,6 @@ function otm_documents_set_document_updated_messages( $messages ) {
 		__( 'View document' )
 	);
 
-	$preview_document_link_html = sprintf( ' <a target="_blank" href="%1$s">%2$s</a>',
-		esc_url( $preview_url ),
-		__( 'Preview document' )
-	);
-
 	$scheduled_document_link_html = sprintf( ' <a target="_blank" href="%1$s">%2$s</a>',
 		esc_url( $permalink ),
 		__( 'Preview document' )
@@ -106,9 +101,9 @@ function otm_documents_set_document_updated_messages( $messages ) {
 		5 => isset($_GET['revision']) ? sprintf( __( 'Document restored to revision from %s.' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
 		6 => __( 'Document published.' ) . $view_document_link_html,
 		7 => __( 'Document saved.' ),
-		8 => __( 'Document submitted.' ) . $preview_document_link_html,
+		8 => __( 'Document submitted.' ),
 		9 => sprintf( __( 'Document scheduled for: %s.' ), '<strong>' . $scheduled_date . '</strong>' ) . $scheduled_document_link_html,
-		10 => __( 'Document draft updated.' ) . $preview_document_link_html,
+		10 => __( 'Document draft updated.' ),
 	);
 	
 	return $messages;
