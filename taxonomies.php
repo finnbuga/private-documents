@@ -74,6 +74,29 @@ function otm_documents_register_taxonomy() {
 		'items_list_navigation'      => __( 'Companies list navigation', 'otm_document' ),
 	);
 
+	$category_labels = array(
+		'name'                       => _x( 'Category', 'Taxonomy General Name', 'otm_document' ),
+		'singular_name'              => _x( 'Category', 'Taxonomy Singular Name', 'otm_document' ),
+		'menu_name'                  => __( 'Categories', 'otm_document' ),
+		'all_items'                  => __( 'All Categories', 'otm_document' ),
+		'parent_item'                => __( 'Parent Item', 'otm_document' ),
+		'parent_item_colon'          => __( 'Parent Item:', 'otm_document' ),
+		'new_item_name'              => __( 'New Category Name', 'otm_document' ),
+		'add_new_item'               => __( 'Add New Category', 'otm_document' ),
+		'edit_item'                  => __( 'Edit Category', 'otm_document' ),
+		'update_item'                => __( 'Update Category', 'otm_document' ),
+		'view_item'                  => __( 'View Category', 'otm_document' ),
+		'separate_items_with_commas' => __( 'Separate items with commas', 'otm_document' ),
+		'add_or_remove_items'        => __( 'Add or remove Categories', 'otm_document' ),
+		'choose_from_most_used'      => __( 'Choose from the most used', 'otm_document' ),
+		'popular_items'              => __( 'Popular Categories', 'otm_document' ),
+		'search_items'               => __( 'Search Categories', 'otm_document' ),
+		'not_found'                  => __( 'Not Found', 'otm_document' ),
+		'no_terms'                   => __( 'No Categories', 'otm_document' ),
+		'items_list'                 => __( 'Categories list', 'otm_document' ),
+		'items_list_navigation'      => __( 'Categories list navigation', 'otm_document' ),
+	);
+
 	$args   = array(
 		'hierarchical'      => true,
 		'show_admin_column' => true,
@@ -84,10 +107,12 @@ function otm_documents_register_taxonomy() {
 	$event_args = array_merge($args, array('show_admin_column' => false), array('labels' => $event_labels));
 	$presenter_args = array_merge($args, array('labels' => $presenter_labels));
 	$company_args = array_merge($args, array('labels' => $company_labels));
+	$category_args = array_merge($args, array('show_admin_column' => false), array('labels' => $category_labels));
 
 	register_taxonomy( 'event', 'document', $event_args );
 	register_taxonomy( 'presenter', 'document', $presenter_args );
 	register_taxonomy( 'company', 'document', $company_args );
+	register_taxonomy( 'otm_documents_category', 'document', $category_args );
 }
 
 /**
