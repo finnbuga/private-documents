@@ -138,6 +138,7 @@ function otm_documents_change_event_meta_box_position( $post_type ) {
 
 /**
  * Order Events by term_id
+ * so that the last event added will be on the top of the list
  */
 add_filter( 'get_terms_args', 'otm_documents_reorder_events_by_term_id', 10, 2 );
 function otm_documents_reorder_events_by_term_id( $args, $taxonomies ) {
@@ -149,38 +150,55 @@ function otm_documents_reorder_events_by_term_id( $args, $taxonomies ) {
 }
 
 /**
- * Add Event filter on admin page
+ * Add taxonomy filter on admin page
  */
-add_action( 'restrict_manage_posts','otm_documents_add_event_filter' );
-function otm_documents_add_event_filter( $post_type ) {
-	$taxonomy = 'event';
+add_action( 'restrict_manage_posts', 'otm_documents_add_taxonomy_filter' );
+function otm_documents_add_taxonomy_filter( $post_type ) {
 	global $wp_query;
 
-	if ( is_object_in_taxonomy( $post_type, $taxonomy ) ) {
-		$dropdown_options = array(
-			'taxonomy' => $taxonomy,
-			'show_option_all' => get_taxonomy( $taxonomy )->labels->all_items,
-			'name' => $taxonomy,
-			'hide_empty' => 0,
-			'hierarchical' => 1,
-			'show_count' => 0,
-			'orderby' => 'name',
-			'selected' => isset( $wp_query->query[$taxonomy] ) ? $wp_query->query[$taxonomy] :'',
-		);
+	$taxonomy = otm_documents_main_taxonomy();
 
-		echo '<label class="screen-reader-text" for="event">' . __( 'Filter by event' ) . '</label>';
-		wp_dropdown_categories( $dropdown_options );
+	if ( ! is_object_in_taxonomy( $post_type, $taxonomy ) ) {
+		return;
+	}
+
+	echo '<label class="screen-reader-text" for="' . $taxonomy . '">' . __( 'Filter by event' ) . '</label>';
+	wp_dropdown_categories( array(
+		'taxonomy'        => $taxonomy,
+		'show_option_all' => get_taxonomy( $taxonomy )->labels->all_items,
+		'name'            => $taxonomy,
+		'hide_empty'      => 0,
+		'hierarchical'    => 1,
+		'show_count'      => 0,
+		'orderby'         => 'name',
+		'selected'        => isset( $wp_query->query[ $taxonomy ] ) ? $wp_query->query[ $taxonomy ] : '',
+	) );
+}
+
+add_filter( 'parse_query', 'otm_documents_add_taxonomy_query' );
+function otm_documents_add_taxonomy_query( $wp_query ) {
+	global $pagenow;
+	$taxonomy = otm_documents_main_taxonomy();
+
+	$query_vars = &$wp_query->query_vars;
+	if ( $pagenow == 'edit.php' && isset( $query_vars[ $taxonomy ] ) && is_numeric( $query_vars[ $taxonomy ] ) ) {
+		$term = get_term_by( 'id', $query_vars[ $taxonomy ], $taxonomy );
+		$query_vars[ $taxonomy ] = $term ? $term->slug : '';
 	}
 }
 
-add_filter( 'parse_query','otm_documents_query_by_event' );
-function otm_documents_query_by_event( $wp_query ) {
-	$taxonomy = 'event';
-	global $pagenow;
+function otm_documents_taxonomy_has_terms( $taxonomy ) {
+	$terms = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => true, 'number' => 1 ) );
 
-	$query_vars = &$wp_query->query_vars;
-	if ( $pagenow == 'edit.php' && isset( $query_vars[$taxonomy] ) && is_numeric( $query_vars[$taxonomy]) ) {
-		$term = get_term_by('id', $query_vars[$taxonomy], $taxonomy);
-		$query_vars[$taxonomy] = $term ? $term->slug : '';
+	return ! empty( $terms ) && ! is_wp_error( $terms );
+}
+
+function otm_documents_main_taxonomy() {
+	if ( otm_documents_taxonomy_has_terms( 'event' ) ) {
+		return 'event';
+	} elseif ( otm_documents_taxonomy_has_terms( 'otm_documents_category' ) ) {
+		return 'otm_documents_category';
+	} else {
+		return '';
 	}
 }
