@@ -27,7 +27,7 @@ function otm_document_register_post_type() {
 	$args   = array(
 		'labels'              => $labels,
 		'public'              => true, // @todo see here for privacy
-		'exclude_from_search' => false, // @todo see here for privacy
+		'exclude_from_search' => false,
 		'publicly_queryable'  => true,
 		'show_ui'             => true,
 		'show_in_nav_menus'   => false,
