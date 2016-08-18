@@ -1,10 +1,33 @@
 <?php
 
 /**
- * Register custom taxonomies: Event, Presenter, Company
+ * Register custom taxonomies: Event, Presenter, Company and Category
  */
 add_action( 'init', 'otm_documents_register_taxonomy', 0 );
 function otm_documents_register_taxonomy() {
+	$category_labels = array(
+		'name'                       => _x( 'Category', 'Taxonomy General Name', 'otm_document' ),
+		'singular_name'              => _x( 'Category', 'Taxonomy Singular Name', 'otm_document' ),
+		'menu_name'                  => __( 'Categories', 'otm_document' ),
+		'all_items'                  => __( 'All Categories', 'otm_document' ),
+		'parent_item'                => __( 'Parent Item', 'otm_document' ),
+		'parent_item_colon'          => __( 'Parent Item:', 'otm_document' ),
+		'new_item_name'              => __( 'New Category Name', 'otm_document' ),
+		'add_new_item'               => __( 'Add New Category', 'otm_document' ),
+		'edit_item'                  => __( 'Edit Category', 'otm_document' ),
+		'update_item'                => __( 'Update Category', 'otm_document' ),
+		'view_item'                  => __( 'View Category', 'otm_document' ),
+		'separate_items_with_commas' => __( 'Separate items with commas', 'otm_document' ),
+		'add_or_remove_items'        => __( 'Add or remove Categories', 'otm_document' ),
+		'choose_from_most_used'      => __( 'Choose from the most used', 'otm_document' ),
+		'popular_items'              => __( 'Popular Categories', 'otm_document' ),
+		'search_items'               => __( 'Search Categories', 'otm_document' ),
+		'not_found'                  => __( 'Not Found', 'otm_document' ),
+		'no_terms'                   => __( 'No Categories', 'otm_document' ),
+		'items_list'                 => __( 'Categories list', 'otm_document' ),
+		'items_list_navigation'      => __( 'Categories list navigation', 'otm_document' ),
+	);
+
 	$event_labels = array(
 		'name'                       => _x( 'Events', 'Taxonomy General Name', 'otm_document' ),
 		'singular_name'              => _x( 'Event', 'Taxonomy Singular Name', 'otm_document' ),
@@ -74,45 +97,23 @@ function otm_documents_register_taxonomy() {
 		'items_list_navigation'      => __( 'Companies list navigation', 'otm_document' ),
 	);
 
-	$category_labels = array(
-		'name'                       => _x( 'Category', 'Taxonomy General Name', 'otm_document' ),
-		'singular_name'              => _x( 'Category', 'Taxonomy Singular Name', 'otm_document' ),
-		'menu_name'                  => __( 'Categories', 'otm_document' ),
-		'all_items'                  => __( 'All Categories', 'otm_document' ),
-		'parent_item'                => __( 'Parent Item', 'otm_document' ),
-		'parent_item_colon'          => __( 'Parent Item:', 'otm_document' ),
-		'new_item_name'              => __( 'New Category Name', 'otm_document' ),
-		'add_new_item'               => __( 'Add New Category', 'otm_document' ),
-		'edit_item'                  => __( 'Edit Category', 'otm_document' ),
-		'update_item'                => __( 'Update Category', 'otm_document' ),
-		'view_item'                  => __( 'View Category', 'otm_document' ),
-		'separate_items_with_commas' => __( 'Separate items with commas', 'otm_document' ),
-		'add_or_remove_items'        => __( 'Add or remove Categories', 'otm_document' ),
-		'choose_from_most_used'      => __( 'Choose from the most used', 'otm_document' ),
-		'popular_items'              => __( 'Popular Categories', 'otm_document' ),
-		'search_items'               => __( 'Search Categories', 'otm_document' ),
-		'not_found'                  => __( 'Not Found', 'otm_document' ),
-		'no_terms'                   => __( 'No Categories', 'otm_document' ),
-		'items_list'                 => __( 'Categories list', 'otm_document' ),
-		'items_list_navigation'      => __( 'Categories list navigation', 'otm_document' ),
-	);
-
-	$args   = array(
+	$args           = array(
 		'hierarchical'      => true,
 		'show_admin_column' => true,
 		'show_tagcloud'     => false,
 		'show_in_nav_menus' => false,
 		//'meta_box_cb'     => callback // @todo
 	);
-	$event_args = array_merge($args, array('show_admin_column' => false), array('labels' => $event_labels));
-	$presenter_args = array_merge($args, array('labels' => $presenter_labels));
-	$company_args = array_merge($args, array('labels' => $company_labels));
-	$category_args = array_merge($args, array('show_admin_column' => false), array('labels' => $category_labels));
+	$category_args  = array_merge( $args, array( 'show_admin_column' => false ),
+		array( 'labels' => $category_labels ) );
+	$event_args     = array_merge( $args, array( 'show_admin_column' => false ), array( 'labels' => $event_labels ) );
+	$presenter_args = array_merge( $args, array( 'labels' => $presenter_labels ) );
+	$company_args   = array_merge( $args, array( 'labels' => $company_labels ) );
 
+	register_taxonomy( 'otm_documents_category', 'document', $category_args );
 	register_taxonomy( 'event', 'document', $event_args );
 	register_taxonomy( 'presenter', 'document', $presenter_args );
 	register_taxonomy( 'company', 'document', $company_args );
-	register_taxonomy( 'otm_documents_category', 'document', $category_args );
 }
 
 /**
@@ -120,11 +121,11 @@ function otm_documents_register_taxonomy() {
  */
 add_action( 'do_meta_boxes', 'otm_documents_change_event_meta_box_position' );
 function otm_documents_change_event_meta_box_position( $post_type ) {
+	$tax_name = 'event';
+
 	if ( $post_type != 'document' ) {
 		return;
 	}
-
-	$tax_name = 'event';
 
 	remove_meta_box( $tax_name . 'div', $post_type, 'side' );
 
@@ -133,7 +134,8 @@ function otm_documents_change_event_meta_box_position( $post_type ) {
 		return;
 	}
 
-	add_meta_box( $tax_name . 'box', $taxonomy->labels->singular_name, $taxonomy->meta_box_cb, null, 'advanced', 'core', array( 'taxonomy' => $tax_name ) );
+	add_meta_box( $tax_name . 'box', $taxonomy->labels->singular_name, $taxonomy->meta_box_cb, null, 'advanced', 'core',
+		array( 'taxonomy' => $tax_name ) );
 }
 
 /**
@@ -146,6 +148,7 @@ function otm_documents_reorder_events_by_term_id( $args, $taxonomies ) {
 		$args['orderby'] = 'term_id';
 		$args['order']   = 'DESC';
 	}
+
 	return $args;
 }
 
@@ -157,7 +160,6 @@ function otm_documents_add_taxonomy_filter( $post_type ) {
 	global $wp_query;
 
 	$taxonomy = otm_documents_main_taxonomy();
-
 	if ( ! is_object_in_taxonomy( $post_type, $taxonomy ) ) {
 		return;
 	}
@@ -178,11 +180,11 @@ function otm_documents_add_taxonomy_filter( $post_type ) {
 add_filter( 'parse_query', 'otm_documents_add_taxonomy_query' );
 function otm_documents_add_taxonomy_query( $wp_query ) {
 	global $pagenow;
-	$taxonomy = otm_documents_main_taxonomy();
-
 	$query_vars = &$wp_query->query_vars;
+	$taxonomy   = otm_documents_main_taxonomy();
+
 	if ( $pagenow == 'edit.php' && isset( $query_vars[ $taxonomy ] ) && is_numeric( $query_vars[ $taxonomy ] ) ) {
-		$term = get_term_by( 'id', $query_vars[ $taxonomy ], $taxonomy );
+		$term                    = get_term_by( 'id', $query_vars[ $taxonomy ], $taxonomy );
 		$query_vars[ $taxonomy ] = $term ? $term->slug : '';
 	}
 }

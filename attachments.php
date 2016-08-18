@@ -16,16 +16,16 @@ add_filter( 'attachments_default_instance', '__return_false' );
 add_action( 'attachments_register', 'otm_documents_attachments' );
 function otm_documents_attachments( $attachments ) {
 	$args = array(
-		'label'         => 'File',
-		'post_type'     => array( 'document' ),
-		'position'      => 'normal',
-		'priority'      => 'high',
-		'filetype'      => 'pdf',
-		'button_text'   => __( 'Attach Files', 'attachments' ),
-		'modal_text'    => __( 'Attach', 'attachments' ),
-		'router'        => 'upload',
-		'post_parent'   => true,
-		'fields'        => array(),
+		'label'       => 'File',
+		'post_type'   => array( 'document' ),
+		'position'    => 'normal',
+		'priority'    => 'high',
+		'filetype'    => 'pdf',
+		'button_text' => __( 'Attach Files', 'attachments' ),
+		'modal_text'  => __( 'Attach', 'attachments' ),
+		'router'      => 'upload',
+		'post_parent' => true,
+		'fields'      => array(),
 	);
 
 	$attachments->register( 'attachments', $args );
@@ -35,10 +35,10 @@ function otm_documents_attachments( $attachments ) {
  * Get attachment url for the current post
  */
 function otm_document_get_attachment_url() {
-	if ( $attachment_url = otm_document_get_attachments_attachment_url()) {
+	if ( $attachment_url = otm_document_get_attachments_attachment_url() ) {
 		return $attachment_url;
 	} else {
-		return otm_document_get_wp_attachment_url(); 
+		return otm_document_get_wp_attachment_url();
 	}
 }
 
@@ -47,8 +47,10 @@ function otm_document_get_attachment_url() {
  */
 function otm_document_get_attachments_attachment_url() {
 	$attachments = new Attachments( 'attachments' );
+
 	if ( $attachments->exist() ) {
 		$attachments->get();
+
 		return $attachments->url();
 	} else {
 		return '';
@@ -64,10 +66,12 @@ function otm_document_get_wp_attachment_url() {
 		'post_type'   => 'attachment',
 		'numberposts' => 1,
 		'post_status' => 'any'
-	));
+	) );
+
 	if ( $attachments ) {
 		$attachment = array_pop( $attachments );
-		return wp_get_attachment_url($attachment->ID);
+
+		return wp_get_attachment_url( $attachment->ID );
 	} else {
 		return '';
 	}
