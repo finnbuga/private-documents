@@ -3,8 +3,7 @@
 /**
  * Add Manager and Member roles
  */
-register_activation_hook( __FILE__, 'otm_documents_add_roles' );
-//add_action( 'init', 'otm_documents_add_roles' );
+register_activation_hook( 'otm-documents/otm-documents.php', 'otm_documents_add_roles' );
 function otm_documents_add_roles() {
 	//remove_role( 'member' );
 	$member_capabilities = array(
