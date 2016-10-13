@@ -11,7 +11,6 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 include_once 'post_type.php';
 include_once 'attachments.php';
 include_once 'taxonomies.php';
-include_once 'roles.php';
 
 /**
  * Check the Attachments plugin is enabled before enabling the current plugin
