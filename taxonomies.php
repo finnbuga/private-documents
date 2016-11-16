@@ -165,7 +165,7 @@ function otm_documents_add_taxonomy_filter( $post_type ) {
 	}
 	$main_taxonomy = $taxonomies[0];
 
-	echo '<label class="screen-reader-text" for="' . $main_taxonomy . '">' . __( 'Filter by event' ) . '</label>';
+	echo '<label class="screen-reader-text" for="' . $main_taxonomy . '">' . "Filter by $main_taxonomy" . '</label>';
 	wp_dropdown_categories( array(
 		'taxonomy'        => $main_taxonomy,
 		'show_option_all' => get_taxonomy( $main_taxonomy )->labels->all_items,
