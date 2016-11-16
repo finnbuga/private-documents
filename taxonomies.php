@@ -197,9 +197,3 @@ function otm_documents_add_taxonomy_query( $wp_query ) {
 		$query_vars[ $main_taxonomy ] = $term ? $term->slug : '';
 	}
 }
-
-function otm_documents_taxonomy_has_terms( $taxonomy ) {
-	$terms = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => true, 'number' => 1 ) );
-
-	return ! empty( $terms ) && ! is_wp_error( $terms );
-}
