@@ -163,21 +163,24 @@ function otm_documents_add_taxonomy_filter( $post_type ) {
 	if ( empty( $taxonomies ) ) {
 		return;
 	}
-	$taxonomy = $taxonomies[0];
+	$main_taxonomy = $taxonomies[0];
 
-	echo '<label class="screen-reader-text" for="' . $taxonomy . '">' . __( 'Filter by event' ) . '</label>';
+	echo '<label class="screen-reader-text" for="' . $main_taxonomy . '">' . __( 'Filter by event' ) . '</label>';
 	wp_dropdown_categories( array(
-		'taxonomy'        => $taxonomy,
-		'show_option_all' => get_taxonomy( $taxonomy )->labels->all_items,
-		'name'            => $taxonomy,
+		'taxonomy'        => $main_taxonomy,
+		'show_option_all' => get_taxonomy( $main_taxonomy )->labels->all_items,
+		'name'            => $main_taxonomy,
 		'hide_empty'      => 0,
 		'hierarchical'    => 1,
 		'show_count'      => 0,
 		'orderby'         => 'name',
-		'selected'        => isset( $wp_query->query[ $taxonomy ] ) ? $wp_query->query[ $taxonomy ] : '',
+		'selected'        => isset( $wp_query->query[ $main_taxonomy ] ) ? $wp_query->query[ $main_taxonomy ] : '',
 	) );
 }
 
+/**
+ * Add taxonomy filter on admin page - Query parser
+ */
 add_filter( 'parse_query', 'otm_documents_add_taxonomy_query' );
 function otm_documents_add_taxonomy_query( $wp_query ) {
 	global $pagenow;
@@ -187,11 +190,11 @@ function otm_documents_add_taxonomy_query( $wp_query ) {
 	if ( empty( $taxonomies ) ) {
 		return;
 	}
-	$taxonomy = $taxonomies[0];
+	$main_taxonomy = $taxonomies[0];
 
-	if ( $pagenow == 'edit.php' && isset( $query_vars[ $taxonomy ] ) && is_numeric( $query_vars[ $taxonomy ] ) ) {
-		$term                    = get_term_by( 'id', $query_vars[ $taxonomy ], $taxonomy );
-		$query_vars[ $taxonomy ] = $term ? $term->slug : '';
+	if ( $pagenow == 'edit.php' && isset( $query_vars[ $main_taxonomy ] ) && is_numeric( $query_vars[ $main_taxonomy ] ) ) {
+		$term                         = get_term_by( 'id', $query_vars[ $main_taxonomy ], $main_taxonomy );
+		$query_vars[ $main_taxonomy ] = $term ? $term->slug : '';
 	}
 }
 
