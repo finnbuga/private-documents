@@ -26,7 +26,7 @@ function otm_document_register_post_type() {
 
 	$args = array(
 		'labels'              => $labels,
-		'public'              => true, // @todo see here for privacy
+		'public'              => true,
 		'exclude_from_search' => false,
 		'publicly_queryable'  => true,
 		'show_ui'             => true,
@@ -35,15 +35,10 @@ function otm_document_register_post_type() {
 		'show_in_admin_bar'   => true,
 		'menu_position'       => 10,
 		'menu_icon'           => 'dashicons-media-document',
-		'capability_type'     => 'post', // @todo see here for privacy
-		//'capabilities'        => // @todo see here for privacy
-		//'map_meta_cap'        => // @todo see here for privacy
+		'capability_type'     => 'post',
 		'hierarchical'        => false,
 		'supports'            => array( 'title', ),
-		//'register_meta_box_cb'=> // @todo for filters??
 		'has_archive'         => 'documents',
-		//'rewrite'             => // @todo investigate
-		//'query_var'           => // @todo investigate
 		'can_export'          => true,
 	);
 
