@@ -153,16 +153,17 @@ function otm_documents_reorder_events_by_term_id( $args, $taxonomies ) {
 }
 
 /**
- * Add taxonomy filter on admin page
+ * Add taxonomy filter on admin page - Select element
  */
 add_action( 'restrict_manage_posts', 'otm_documents_add_taxonomy_filter' );
 function otm_documents_add_taxonomy_filter( $post_type ) {
 	global $wp_query;
 
-	$taxonomy = otm_documents_main_taxonomy();
-	if ( ! is_object_in_taxonomy( $post_type, $taxonomy ) ) {
+	$taxonomies = get_object_taxonomies( 'document', 'names' );
+	if ( empty( $taxonomies ) ) {
 		return;
 	}
+	$taxonomy = $taxonomies[0];
 
 	echo '<label class="screen-reader-text" for="' . $taxonomy . '">' . __( 'Filter by event' ) . '</label>';
 	wp_dropdown_categories( array(
@@ -181,7 +182,12 @@ add_filter( 'parse_query', 'otm_documents_add_taxonomy_query' );
 function otm_documents_add_taxonomy_query( $wp_query ) {
 	global $pagenow;
 	$query_vars = &$wp_query->query_vars;
-	$taxonomy   = otm_documents_main_taxonomy();
+
+	$taxonomies = get_object_taxonomies( 'document', 'names' );
+	if ( empty( $taxonomies ) ) {
+		return;
+	}
+	$taxonomy = $taxonomies[0];
 
 	if ( $pagenow == 'edit.php' && isset( $query_vars[ $taxonomy ] ) && is_numeric( $query_vars[ $taxonomy ] ) ) {
 		$term                    = get_term_by( 'id', $query_vars[ $taxonomy ], $taxonomy );
@@ -193,14 +199,4 @@ function otm_documents_taxonomy_has_terms( $taxonomy ) {
 	$terms = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => true, 'number' => 1 ) );
 
 	return ! empty( $terms ) && ! is_wp_error( $terms );
-}
-
-function otm_documents_main_taxonomy() {
-	if ( otm_documents_taxonomy_has_terms( 'event' ) ) {
-		return 'event';
-	} elseif ( otm_documents_taxonomy_has_terms( 'otm_documents_category' ) ) {
-		return 'otm_documents_category';
-	} else {
-		return '';
-	}
 }
