@@ -35,22 +35,21 @@ function otm_documents_attachments( $attachments ) {
  * Get attachment url for the current post
  */
 function otm_document_get_attachment_url() {
-	if ( $attachment_url = otm_document_get_attachments_attachment_url() ) {
+	if ( $attachment_url = otm_documents_get_attachments_attachment_url() ) {
 		return $attachment_url;
 	} else {
-		return otm_document_get_wp_attachment_url();
+		return otm_documents_get_wp_attachment_url();
 	}
 }
 
 /**
  * Get attachment url for the current post from the Attachments plugin
  */
-function otm_document_get_attachments_attachment_url() {
+function otm_documents_get_attachments_attachment_url() {
 	$attachments = new Attachments( 'attachments' );
 
 	if ( $attachments->exist() ) {
 		$attachments->get();
-
 		return $attachments->url();
 	} else {
 		return '';
@@ -60,7 +59,7 @@ function otm_document_get_attachments_attachment_url() {
 /**
  * Get attachment url for the current post from WP core
  */
-function otm_document_get_wp_attachment_url() {
+function otm_documents_get_wp_attachment_url() {
 	$attachments = get_children( array(
 		'post_parent' => get_the_ID(),
 		'post_type'   => 'attachment',
@@ -70,7 +69,6 @@ function otm_document_get_wp_attachment_url() {
 
 	if ( $attachments ) {
 		$attachment = array_pop( $attachments );
-
 		return wp_get_attachment_url( $attachment->ID );
 	} else {
 		return '';
